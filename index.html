@@ -1973,17 +1973,29 @@
 </a>
 
 <!-- ACCESS DENIED MODAL -->
-<div id="accessModal">
+<div id="accessModal" style="display:none; position:fixed; inset:0; z-index:1000000; background:rgba(0,0,0,.88); backdrop-filter:blur(15px); align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this){this.style.display='none';document.body.style.overflow='';}">
   <div class="access-box">
-    <button class="prof-close" onclick="closeAccessModal()" style="top:18px; right:18px;">✕</button>
+    <!-- Close X button -->
+    <button class="prof-close" style="top:18px; right:18px;"
+      onclick="document.getElementById('accessModal').style.display='none'; document.body.style.overflow='';">✕</button>
     <span class="access-icon">🚫</span>
     <div class="access-title">Access Restricted!</div>
     
-    <div class="access-msg-hi">आपने कोई कोर्स नहीं लिया है। यह सुविधा सिर्फ कोर्स खरीदे हुए यूजर के लिए है।</div>
-    <div class="access-msg-en">You haven't purchased any course. This facility is strictly for users who have bought the course.</div>
+    <div class="access-msg-hi">आपने कोई कोर्स नहीं लिया है।<br>यह सुविधा <strong>सिर्फ कोर्स खरीदे हुए यूजर</strong> के लिए है।</div>
+    <div class="access-msg-en">You haven't purchased any course.<br>This facility is <strong>strictly for paid users</strong> who have bought the course.</div>
     
-    <button class="access-buy-btn" onclick="closeAccessModal(); document.getElementById('mainCta').scrollIntoView({behavior:'smooth'})">🚀 Buy Course Now — Just ₹499</button>
-    <div class="access-close-link" onclick="closeAccessModal()">Close / बंद करें</div>
+    <!-- Buy Course Now button -->
+    <button class="access-buy-btn"
+      onclick="document.getElementById('accessModal').style.display='none'; document.body.style.overflow=''; setTimeout(function(){ var cta=document.getElementById('mainCta'); if(cta) cta.scrollIntoView({behavior:'smooth'}); }, 200);">
+      🚀 Buy Course Now — Just ₹499
+    </button>
+    <!-- Close text link -->
+    <div class="access-close-link"
+      onclick="document.getElementById('accessModal').style.display='none'; document.body.style.overflow='';">
+      ✖ Close / बंद करें
+    </div>
+  </div>
+</div>
   </div>
 </div>
 
