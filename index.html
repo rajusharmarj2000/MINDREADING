@@ -71,25 +71,82 @@
     /* ============================
        TOP LANGUAGE BAR
     ============================ */
+    /* ============================
+       TOP HEADER (STARS & NAV)
+    ============================ */
     .lang-bar {
-      background: rgba(20,0,60,.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1.5px solid rgba(255,215,0,.25);
-      padding: 10px 16px;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      position: sticky; top: 0; z-index: 99;
+      background: rgba(15,0,40,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 2px solid rgba(255,215,0,0.3);
+      padding: 8px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10001;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.6);
     }
-    .lang-bar-label { font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing:.5px; }
+
+    /* Left: Seat Circle */
+    .header-left { flex: 0 0 55px; }
+    .seat-circle {
+      width: 52px; height: 52px;
+      background: radial-gradient(circle at 30% 30%, #ff4d00, #990000);
+      border: 2px solid #ffd700;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      box-shadow: 0 0 15px rgba(255,50,0,0.7);
+      animation: seat-pulse 2s infinite alternate;
+      cursor: pointer;
+    }
+    @keyframes seat-pulse {
+      from { transform: scale(1); box-shadow: 0 0 10px rgba(255,50,0,0.5); }
+      to { transform: scale(1.08); box-shadow: 0 0 25px rgba(255,50,0,1); }
+    }
+    .seat-circle-title {
+      font-size: 7px; font-weight: 900; color: #fff;
+      text-transform: uppercase; line-height: 1.1; margin-bottom: 1px;
+      text-align: center; font-family: 'Poppins', sans-serif;
+    }
+    .seat-circle-count {
+      font-size: 19px; font-weight: 950; color: #fff;
+      line-height: 1; font-family: 'Poppins', sans-serif;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Center: Language toggle */
+    .header-center {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .lang-bar-label { font-size: 9px; color: var(--gold); font-weight: 800; letter-spacing:1px; text-transform: uppercase; }
+    .lang-group { display: flex; gap: 4px; }
     .lang-btn {
-      background: rgba(123,0,255,.25);
-      border: 1.5px solid rgba(255,215,0,.3);
-      color: #ddd; padding: 4px 12px;
-      border-radius: 20px; font-size: 12px; font-weight: 600;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.7); padding: 4px 10px;
+      border-radius: 20px; font-size: 10px; font-weight: 700;
       cursor: pointer; transition: all .25s;
     }
-    .lang-btn.active, .lang-btn:hover {
+    .lang-btn.active {
       background: linear-gradient(135deg,#ffd700,#ff8c00);
       color: #1a0040; border-color: transparent;
+      box-shadow: 0 0 10px rgba(255,215,0,0.4);
+    }
+
+    /* Right: Profile */
+    .header-right { flex: 0 0 55px; display: flex; justify-content: flex-end; }
+    .header-prof-btn {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg,#7b00ff,#ff4dac);
+      border: 2px solid rgba(255,215,0,0.6);
+      border-radius: 50%;
+      color: #fff; font-size: 24px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(123,0,255,0.6);
+      animation: prof-pulse-h 3s infinite;
+    }
+    @keyframes prof-pulse-h {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(123,0,255,0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(123,0,255,0.8); }
     }
 
     /* ============================
@@ -545,6 +602,28 @@
 <div class="stars-bg"></div>
 
 <div class="page">
+
+  <!-- ===== STICKY HEADER ===== -->
+  <div class="lang-bar">
+    <div class="header-left">
+      <div class="seat-circle" onclick="document.getElementById('seatCount').scrollIntoView({behavior:'smooth'})">
+        <div class="seat-circle-title">Avalable<br>Seet</div>
+        <div class="seat-circle-count" id="headerSeatCount">29</div>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="lang-bar-label">LANGUAGE</div>
+      <div class="lang-group">
+        <button class="lang-btn active">Hindi</button>
+        <button class="lang-btn">English</button>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="header-prof-btn" onclick="openProfileModal()">👤</div>
+    </div>
+  </div>
 
 
 
@@ -1716,12 +1795,14 @@
     var main = document.getElementById('seatCount');
     var shown = false;
 
-    /* Load initial count from localStorage for sticky bar */
+    /* Load initial count from localStorage for sticky bar & header */
     var STORAGE_KEY = 'mr_slots';
     var initSlots = localStorage.getItem(STORAGE_KEY);
-    if(initSlots !== null && s1 && s2){
-      s1.textContent = initSlots;
-      s2.textContent = initSlots;
+    if(initSlots !== null){
+      if(s1) s1.textContent = initSlots;
+      if(s2) s2.textContent = initSlots;
+      var hs = document.getElementById('headerSeatCount');
+      if(hs) hs.textContent = initSlots;
     }
 
     /* Show sticky bar after 200px scroll */
@@ -1734,9 +1815,11 @@
 
     /* Sync sticky seats with main counter every 3 seconds */
     setInterval(function(){
-      if(main && s1 && s2){
-        s1.textContent = main.textContent;
-        s2.textContent = main.textContent;
+      if(main){
+        if(s1) s1.textContent = main.textContent;
+        if(s2) s2.textContent = main.textContent;
+        var hs = document.getElementById('headerSeatCount');
+        if(hs) hs.textContent = main.textContent;
       }
     }, 3000);
   })();
@@ -1777,24 +1860,8 @@
   });
 
   // ============================================================
-          stSpan.textContent = '❌ Full';
-          slotEl.style.opacity = '0.5';
-          slotEl.style.cursor = 'default';
-        } else if (s.status === 'limited') {
-          stSpan.className = 'm-slot-avail m-avail-limited';
-          stSpan.textContent = '⚡ Limited';
-        } else {
-          stSpan.className = 'm-slot-avail m-avail-open';
-          stSpan.textContent = '✅ Available';
-        }
-        slotEl.appendChild(stSpan);
-        grid.appendChild(slotEl);
-      });
-    } catch(e) {
-      const grid = document.getElementById('mSlotsGrid');
-      if(grid) grid.innerHTML = '<div style="color:red;font-size:10px;">Error slots: ' + e.message + '</div>';
-    }
-  };
+  // Slot Modal functionality seems to be partially removed in source.
+  // ============================================================
 
   // Close modal on overlay click
   document.getElementById('slotModal').addEventListener('click', function(e) {
@@ -2151,9 +2218,11 @@
     var sc = document.getElementById('seatCount');
     var s1 = document.getElementById('stickySeats');
     var s2 = document.getElementById('stickySeats2');
+    var hs = document.getElementById('headerSeatCount');
     if(sc) sc.textContent = n;
     if(s1) s1.textContent = n;
     if(s2) s2.textContent = n;
+    if(hs) hs.textContent = n;
 
     /* also update progress bar booked label on main page */
     var bl = document.getElementById('bookedLabel');
