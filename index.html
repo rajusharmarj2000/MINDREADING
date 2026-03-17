@@ -135,19 +135,31 @@
     .header-right { flex: 0 0 55px; display: flex; justify-content: flex-end; }
     .header-prof-btn {
       width: 48px; height: 48px;
-      background: linear-gradient(135deg,#7b00ff,#ff4dac);
-      border: 2px solid rgba(255,215,0,0.6);
+      /* WhatsApp Green Gradient */
+      background: linear-gradient(135deg,#25d366,#128c7e);
+      border: 2px solid rgba(255,255,255,0.3);
       border-radius: 50%;
       color: #fff; font-size: 24px;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(123,0,255,0.6);
-      animation: prof-pulse-h 3s infinite;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.5);
+      animation: prof-pulse-h 2s infinite;
     }
     @keyframes prof-pulse-h {
-      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(123,0,255,0.5); }
-      50% { transform: scale(1.05); box-shadow: 0 4px 25px rgba(123,0,255,0.8); }
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(37,211,102,0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 4px 25px rgba(37,211,102,0.8); }
     }
+    .header-prof-btn::after {
+      content: 'Support';
+      position: absolute;
+      bottom: -15px;
+      font-size: 8px;
+      font-weight: 900;
+      color: #00e676;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
 
     /* ============================
        HERO SECTION
@@ -492,6 +504,40 @@
     .cta-main { font-size:17px; font-weight:900; text-shadow:0 2px 4px rgba(0,0,0,.4); }
     .cta-sub  { font-size:11px; font-weight:500; color:rgba(255,255,255,.8); margin-top:1px; }
 
+    /* ============================
+       ACCESS DENIED MODAL
+    ============================ */
+    #accessModal {
+      display:none; position:fixed; inset:0; z-index:1000000;
+      background:rgba(0,0,0,.88); backdrop-filter:blur(15px);
+      align-items:center; justify-content:center; padding:16px;
+    }
+    #accessModal.open { display:flex; }
+    .access-box {
+      background:linear-gradient(160deg,#1a0000,#2a0000,#100020);
+      border:2px solid rgba(255,50,0,0.5);
+      border-radius:28px; width:100%; max-width:360px;
+      padding:40px 24px 34px; text-align:center;
+      position:relative; animation: access-pop .4s cubic-bezier(.32,.72,0,1.2);
+      box-shadow: 0 0 60px rgba(255,50,0,0.4);
+    }
+    @keyframes access-pop {
+      from { transform: scale(.7); opacity:0; }
+      to   { transform: scale(1);   opacity:1; }
+    }
+    .access-icon { font-size:62px; margin-bottom:18px; display:block; filter: drop-shadow(0 0 10px #ff3300); }
+    .access-title { font-size:22px; font-weight:900; color:#ff3d00; margin-bottom:14px; font-family:'Noto Sans Devanagari', sans-serif; }
+    .access-msg-hi { font-size:15px; font-weight:700; color:#fff; line-height:1.6; margin-bottom:12px; font-family:'Noto Sans Devanagari', sans-serif; }
+    .access-msg-en { font-size:13px; font-weight:600; color:rgba(255,255,255,.7); line-height:1.6; margin-bottom:24px; font-family:'Poppins', sans-serif; }
+    .access-buy-btn {
+      width:100%; padding:15px; border-radius:14px; border:none; cursor:pointer;
+      background:linear-gradient(135deg,#ffd700,#ff8c00);
+      color:#1a0035; font-size:16px; font-weight:900; font-family:'Poppins',sans-serif;
+      box-shadow:0 6px 20px rgba(255,180,0,0.45); transition: .2s;
+    }
+    .access-buy-btn:hover { transform: translateY(-3px); box-shadow:0 8px 30px rgba(255,180,0,0.6); }
+    .access-close-link { display:inline-block; margin-top:20px; color:rgba(255,255,255,.45); font-size:12px; cursor:pointer; text-decoration:underline; font-family:'Poppins', sans-serif; }
+
     /* Warning popup */
     .warn-popup {
       display: none;
@@ -621,7 +667,7 @@
     </div>
 
     <div class="header-right">
-      <div class="header-prof-btn" onclick="openProfileModal()">👤</div>
+      <div class="header-prof-btn" onclick="openAccessModal()">💬</div>
     </div>
   </div>
 
@@ -1549,13 +1595,35 @@
     document.body.style.overflow = '';
   };
 
-  window.profLogout = function() {
+    window.profLogout = function() {
     try {
       localStorage.removeItem('mr_user_mobile');
       localStorage.removeItem('mr_user_joined');
+      if(window.syncProfileStatus) window.syncProfileStatus();
     } catch(e) {}
     closeProfileModal();
   };
+
+  /* ----- SYNC PROFILE STATUS ----- */
+  window.syncProfileStatus = function() {
+    // Hidden since profile button is now Support button
+    /*
+    var profBtn = document.querySelector('.header-prof-btn');
+    if(!profBtn) return;
+    var mobile = '';
+    try { mobile = localStorage.getItem('mr_user_mobile') || ''; } catch(e) {}
+    if(mobile) {
+      profBtn.classList.add('logged-in');
+    } else {
+      profBtn.classList.remove('logged-in');
+    }
+    */
+  };
+
+  // Run on load
+  document.addEventListener('DOMContentLoaded', function() {
+    if(window.syncProfileStatus) window.syncProfileStatus();
+  });
 
   /* ----- PROFILE LOGIN ----- */
   window.showProfLogin = function() {
@@ -1587,6 +1655,7 @@
       errEl.classList.remove('show');
       localStorage.setItem('mr_user_mobile', found.mobile);
       if(found.date) localStorage.setItem('mr_user_joined', found.date);
+      if(window.syncProfileStatus) window.syncProfileStatus();
       // Re-open profile to refresh view
       hideProfLogin();
       closeProfileModal();
@@ -1764,6 +1833,7 @@
         time: now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit', hour12:true})
       });
       localStorage.setItem('mr_registrations', JSON.stringify(regList));
+      if(window.syncProfileStatus) window.syncProfileStatus();
     } catch(e) {}
 
     // Show success screen
@@ -1827,9 +1897,24 @@
 
 
 <!-- WHATSAPP FLOAT -->
-<a href="https://wa.me/91XXXXXXXXXX" class="wa-float" target="_blank">
+<a href="javascript:void(0)" onclick="handleWhatsAppClick(event)" class="wa-float">
   💬 Chat on WhatsApp
 </a>
+
+<!-- ACCESS DENIED MODAL -->
+<div id="accessModal">
+  <div class="access-box">
+    <button class="prof-close" onclick="closeAccessModal()" style="top:18px; right:18px;">✕</button>
+    <span class="access-icon">🚫</span>
+    <div class="access-title">Access Restricted!</div>
+    
+    <div class="access-msg-hi">आपने कोई कोर्स नहीं लिया है। यह सुविधा सिर्फ कोर्स खरीदे हुए यूजर के लिए है।</div>
+    <div class="access-msg-en">You haven't purchased any course. This facility is strictly for users who have bought the course.</div>
+    
+    <button class="access-buy-btn" onclick="closeAccessModal(); document.getElementById('mainCta').scrollIntoView({behavior:'smooth'})">🚀 Buy Course Now — Just ₹499</button>
+    <div class="access-close-link" onclick="closeAccessModal()">Close / बंद करें</div>
+  </div>
+</div>
 
 <script>
   // Language buttons
@@ -1857,6 +1942,36 @@
       this.style.transform='scale(0.96)';
       setTimeout(()=>this.style.transform='',200);
     });
+  });
+
+  /* ── WHATSAPP RESTRICTION ── */
+  window.handleWhatsAppClick = function(e) {
+    e.preventDefault();
+    var mobile = '';
+    try { mobile = localStorage.getItem('mr_user_mobile') || ''; } catch(e2) {}
+    
+    if (mobile) {
+      // User is "enrolled" (registered in this flow) — proceed to WhatsApp
+      window.open('https://wa.me/91XXXXXXXXXX', '_blank');
+    } else {
+      // Not enrolled — show modal
+      openAccessModal();
+    }
+  };
+
+  window.openAccessModal = function() {
+    document.getElementById('accessModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  
+  window.closeAccessModal = function() {
+    document.getElementById('accessModal').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  // Close access modal on background click
+  document.getElementById('accessModal').addEventListener('click', function(e) {
+    if(e.target === this) closeAccessModal();
   });
 
   // ============================================================
