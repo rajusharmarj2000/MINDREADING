@@ -1351,8 +1351,11 @@
     </button>
 
     <!-- Support Button -->
-    <button type="button" onclick="handleWhatsAppClick(event)"
-       id="supportBtn"
+    <button type="button" id="supportBtn"
+       onclick="(function(){
+         var m=document.getElementById('accessModal');
+         if(m){m.style.display='flex';m.style.alignItems='center';m.style.justifyContent='center';document.body.style.overflow='hidden';}
+       })()"
        style="
          flex-shrink:0;
          display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -2038,17 +2041,15 @@
   };
 
   // Close access modal on background click
-  document.getElementById('accessModal').addEventListener('click', function(e) {
+  var _am = document.getElementById('accessModal');
+  if(_am) _am.addEventListener('click', function(e) {
     if(e.target === this) closeAccessModal();
   });
 
-  // ============================================================
-  // Slot Modal functionality seems to be partially removed in source.
-  // ============================================================
-
-  // Close modal on overlay click
-  document.getElementById('slotModal').addEventListener('click', function(e) {
-    if (e.target === this) closeSlotModal();
+  // Close slot modal on overlay click (only if element exists)
+  var _sm = document.getElementById('slotModal');
+  if(_sm) _sm.addEventListener('click', function(e) {
+    if (e.target === this) { if(typeof closeSlotModal==='function') closeSlotModal(); }
   });
 
   // ============================================================
