@@ -75,7 +75,9 @@
        TOP HEADER (STARS & NAV)
     ============================ */
     .lang-bar {
-      position: sticky; top: 0; z-index: 10001;
+      position: fixed; top: 0; z-index: 10001;
+      width: 100%; max-width: 430px;
+      left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; justify-content: space-between;
       padding: 10px 18px;
       /* Premium Glassmorphism */
@@ -192,7 +194,7 @@
        HERO SECTION
     ============================ */
     .hero {
-      padding: 26px 16px 0;
+      padding: 100px 16px 0;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -680,7 +682,7 @@
   <div class="lang-bar">
     <div class="header-left">
       <div class="seat-circle" onclick="document.getElementById('seatCount').scrollIntoView({behavior:'smooth'})">
-        <div class="seat-circle-title">Avalable<br>Seet</div>
+        <div class="seat-circle-title">Available<br>Seats</div>
         <div class="seat-circle-count" id="headerSeatCount">29</div>
       </div>
     </div>
